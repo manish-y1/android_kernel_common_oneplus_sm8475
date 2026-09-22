@@ -1174,3 +1174,21 @@ void unpriv_ebpf_notify(int new_state)
 		pr_err("WARNING: %s", EBPF_WARN);
 }
 #endif
+
+bool __read_mostly __nospectre_bhb;
+static int __init parse_spectre_bhb_param(char *str)
+{
+	__nospectre_bhb = true;
+	return 0;
+}
+early_param("nospectre_bhb", parse_spectre_bhb_param);
+
+u8 get_spectre_bhb_loop_value(void)
+{
+	return spectre_bhb_loop_affected(SCOPE_SYSTEM);
+}
+
+bool is_spectre_bhb_fw_mitigated(void)
+{
+	return is_spectre_bhb_fw_affected(SCOPE_SYSTEM);
+}
